@@ -1,0 +1,38 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa
+    activate server
+    server->>browser: HTML document
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    Note right of browser: The browser issues this request after seeing <link rel="stylesheet" type="text/css" href="/exampleapp/main.css" />
+    server-->>browser: css file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+    activate server
+    Note right of browser: The browser issues this request after seeing <script type="text/javascript" src="/exampleapp/spa.js"></script>
+    server-->>browser: JavaScript file
+    deactivate server
+
+    Note right of browser: The browser starts executing the JavaScript code, in this script a XMLHttpRequest() is created and requests "/exampleapp/data.json"
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server-->>browser: [{ "content": "New note", "date": "2023-01-23" }, ... ]
+    deactivate server
+
+    Note right of browser: The browser executes the onreadystatechange callback function of the XMLHttpRequest, which in turn parses JSON data and calls redrawNotes
+    Note right of browser: The redrawNotes function iterates through each note and adds a list item for each note
+    Note right of browser: The window.onload event has a function added which prevents default behavior of the form submit, adds new note to list, redraws note list, and sends new note to server
+
+    browser-->>browser: User adds a new note and clicks Save
+
+    Note right of browser: The form.submit event is called<br/>preventDefault() is called on the form to prevent default behavior<br/>A new note is created from the text input and new Date and added to the list of notes<br>redrawNotes() is called to refresh the list of displayed notes<br/>sendToServer() is called to send the added note to the server
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    Note right of browser: This is executed by the sendToServer function which creates a XMLHttpRequest with content type "application/json" and data containing only new newly added note
