@@ -23,6 +23,16 @@ const Statistics = (props) => {
     return 0
   }
 
+  if(total() == 0)
+  {
+    return (
+      <div>
+        <h1>statistics</h1>
+        <p>no statistics gives</p>
+      </div>
+    )
+  }
+
   return (
     <div>
       <h1>statistics</h1>
@@ -34,7 +44,6 @@ const Statistics = (props) => {
       <p>positive {100*positive()}%</p>
     </div>
   )
-
 }
 
 const App = () => {
@@ -57,7 +66,6 @@ const App = () => {
     console.log('bad: ', value)
     setBad(value + 1)
   }
-
 
   return (
     <div>
