@@ -1,0 +1,30 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa
+    activate server
+    server->>browser: HTML document
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    Note right of browser: The browser issues this request after seeing <link rel="stylesheet" type="text/css" href="/exampleapp/main.css" />
+    server-->>browser: css file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+    activate server
+    Note right of browser: The browser issues this request after seeing <script type="text/javascript" src="/exampleapp/spa.js"></script>
+    server-->>browser: JavaScript file
+    deactivate server
+
+    Note right of browser: The browser starts executing the JavaScript code, in this script a XMLHttpRequest() is created and requests "/exampleapp/data.json"
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server-->>browser: [{ "content": "New note", "date": "2023-01-23" }, ... ]
+    deactivate server
+
+    Note right of browser: The browser executes the onreadystatechange callback function of the XMLHttpRequest, which in turn parses JSON data and calls redrawNotes
+    Note right of browser: The redrawNotes function iterates through each note and adds a list item for each note
