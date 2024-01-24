@@ -1,0 +1,37 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+    activate server
+    Note right of browser: The browser executes the POST command when the Save button is clicked
+    Note right of server: The server adds the new note to the list and responds with URL redirect
+    server->>browser: Server responds with Status Code: 302, location: /exampleapp/notes
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    Note right of browser: This request is issued in respose to the URL redirect
+    server-->>browser: HTML document
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    Note right of browser: The browser issues this request after seeing <link rel="stylesheet" type="text/css" href="/exampleapp/main.css" />
+    server-->>browser: css file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    Note right of browser: The browser issues this request after seeing <script type="text/javascript" src="/exampleapp/main.js"></script>
+    server-->>browser: JavaScript file
+    deactivate server
+
+    Note right of browser: The browser starts executing the JavaScript code that fetches the JSON from the server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server-->>browser: [{ "content": "New note", "date": "2023-01-23" }, ... ]
+    deactivate server
+
+    Note right of browser: The browser executes the callback function that renders the notes
