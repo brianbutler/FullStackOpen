@@ -14,7 +14,8 @@ const App = () => {
 
   const lenAnecdotes = anecdotes.length
 
-  const [selected, setSelected] = useState({index:0, votes:new Array(lenAnecdotes).fill(0)})
+  const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Array(lenAnecdotes).fill(0))
 
   function randomInteger(min, max) {
     return Math.floor(Math.random() * Math.floor(max - min)) + Math.floor(min);
@@ -23,21 +24,35 @@ const App = () => {
   const nextSelected = () => () => {
     let next = randomInteger(0, lenAnecdotes)
     console.log("Next: ", next)
-    setSelected({index:next, votes:{...selected.votes}})
+    setSelected(next)
   }
 
   const voteSelected = () => () => {
-    let newState = {index:selected.index, votes:{...selected.votes}}
-    newState.votes[selected.index] += 1
-    setSelected(newState)
+    let newVotes = Array.from(votes)
+    newVotes[selected] += 1
+    setVotes(newVotes)
+  }
+
+  let maxVotesIdx = 0;
+  let maxVotes = 0;
+
+  for (let i = 0; i < votes.length; i++) {
+    if(votes[i] > maxVotes) {
+      maxVotes = votes[i]
+      maxVotesIdx = i
+    }
   }
 
   return (
     <div>
-      <p>{anecdotes[selected.index]}</p>
-      <p>has {selected.votes[selected.index]} votes</p>
+      <h1>Anecdote of the day</h1>
+      <p>{anecdotes[selected]}</p>
+      <p>has {votes[selected]} votes</p>
       <button onClick={voteSelected()}>vote</button>
       <button onClick={nextSelected()}>next anecdote</button>
+      <h1>Anecdote with the most votes</h1>
+      <p>{anecdotes[maxVotesIdx]}</p>
+      <p>has {votes[maxVotesIdx]} votes</p>
     </div>
   )
 }
